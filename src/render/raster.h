@@ -1,6 +1,8 @@
 #ifndef RASTER_H
 #define RASTER_H
 
+/* TODO: clamp everything to not go past screen bounds. */
+
 #include "stdio.h"
 #include "osbind.h"
 #include "types.h"
@@ -54,15 +56,15 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
         for (j = byte1; j <= byte2; j++) {
             if (byte1 == byte2) {
                 mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
-                *(base + i * 80 + j) &= (UINT8)~mask;
+                *(base + i * SCREEN_WIDTH_BYTES + j) &= (UINT8)~mask;
             } else if (j == byte1) {
                 mask = (UINT8)(0xFF >> bit1);
-                *(base + i * 80 + j) &= (UINT8)~mask;
+                *(base + i * SCREEN_WIDTH_BYTES + j) &= (UINT8)~mask;
             } else if (j == byte2) {
                 mask = (UINT8)(0xFF << (7 - bit2));
-                *(base + i * 80 + j) &= (UINT8)~mask;
+                *(base + i * SCREEN_WIDTH_BYTES + j) &= (UINT8)~mask;
             } else {
-                *(base + i * 80 + j) = 0;
+                *(base + i * SCREEN_WIDTH_BYTES + j) = 0;
             }
             
             /* essentially if it's an edge byte, do NOT wipe the whole thing. */
@@ -85,7 +87,7 @@ void plot_pixel(UINT8 *base, int row, int col);
 void plot_pixel(UINT8 *base, int row, int col)
 {
     if (col >= 0 && col < SCREEN_WIDTH && row >= 0 && row < SCREEN_HEIGHT)
-        *(base + row * 80 + (col >> 3)) |= 1 << (7 - (col & 7));
+        *(base + row * SCREEN_WIDTH_BYTES + (col >> 3)) |= 1 << (7 - (col & 7));
     /* this code is from an earlier tutorial or lecture */
 }
 
@@ -122,21 +124,21 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
         if (byte1 == byte2)
         {
             mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
-            *(base + row * 80 + j) |= (UINT8)mask;
+            *(base + row *SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
         }
         else if (j == byte1)
         {
             mask = (UINT8)(0xFF >> bit1);
-            *(base + row * 80 + j) |= (UINT8)mask;
+            *(base + row * SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
         }
         else if (j == byte2)
         {
             mask = (UINT8)(0xFF << (7 - bit2));
-            *(base + row * 80 + j) |= (UINT8)mask;
+            *(base + row * SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
         }
         else
         {
-            *(base + row * 80 + j) = -1; /* -1 is the equivalent of 0xFF for however large the data size is. */
+            *(base + row * SCREEN_WIDTH_BYTES + j) = -1; /* -1 is the equivalent of 0xFF for however large the data size is. */
         }
 
         /* essentially if it's an edge byte, do NOT wipe the whole thing. */
@@ -268,6 +270,53 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
 void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
 /* should be the opposite of clear_region. */
 
+void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
+{
+    if (length == 0 || width == 0)
+        return; /* if the size happens to be 0, don't make it do anything */
+        
+    int byte1 = col >> 3;
+    int byte2 = (col + width - 1) >> 3; /* first/last byte */
+
+    int bit1 = col & 7;
+    int bit2 = (col + width - 1) & 7; /* first/last bit */
+
+    UINT8 mask;
+
+    int i;
+    int j; /* loop vars */
+
+    for (i = row; i < row + length; i++)
+    {
+        for (j = byte1; j <= byte2; j++)
+        {
+            if (byte1 == byte2)
+            {
+                mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
+                *(base + i * SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
+            }
+            else if (j == byte1)
+            {
+                mask = (UINT8)(0xFF >> bit1);
+                *(base + i * SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
+            }
+            else if (j == byte2)
+            {
+                mask = (UINT8)(0xFF << (7 - bit2));
+                *(base + i * SCREEN_WIDTH_BYTES + j) |= (UINT8)mask;
+            }
+            else
+            {
+                *(base + i * SCREEN_WIDTH_BYTES + j) = -1;
+            }
+
+            /* essentially if it's an edge byte, do NOT wipe the whole thing. */
+            /* accomplish this by cutting bits off a UINT8 then doing inverse of that */
+        }
+    }
+}
+
+
 
 /*----- Function: plot_square -----
 
@@ -305,7 +354,86 @@ void plot_square(UINT32 *base, int row, int col, UINT16 side)
 */
 void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction);
 
+void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction)
+{
 
+    if (triangle_base == 0 || height == 0) return;
+
+    /* for myself to comprehend the triangles:
+     * 0 = |‾/
+     * 1 = \‾|
+     * 2 = |_\
+     * 3 = /_|
+     */
+    /* determine direction of triangle. */
+    /* based on this, calculate M (slope) */
+    /* using M, that is now the length for the triangles */
+    /* ^^ yeah this would be division, but it isn't used per-pixel. */
+    
+    /* length = x */
+    /* height = y */
+    /* not calculating slope here because it could be 0 which is a big problem */
+    int i;
+    int tri_len; /* triangle_length */
+
+    int draw_col,draw_row;
+    switch (direction) {
+        case 0:
+            for (i = 0; i <= height; i++) 
+            {
+                tri_len = triangle_base - (i * triangle_base) / height;
+                if (tri_len < 1)
+                    tri_len = 1;
+
+                draw_row = row + i;
+                draw_col = col;
+
+                plot_horizontal_line(base, draw_row, draw_col, tri_len);
+            }
+            return;
+        case 1:
+            for (i = 0; i <= height; i++)
+            {
+                tri_len = (i * triangle_base) / height;
+                if (tri_len < 1)
+                    tri_len = 1;
+
+                draw_row = row + i;
+                draw_col = col - tri_len + 1;
+
+                plot_horizontal_line(base, draw_row, draw_col, tri_len);
+            }
+            return;
+        case 2:
+            for (i = 0; i <= height; i++)
+            {
+                tri_len = (i * triangle_base) / height;
+                if (tri_len < 1)
+                    tri_len = 1;
+
+                draw_row = row - height + i;
+                draw_col = col;
+
+                plot_horizontal_line(base, draw_row, draw_col, tri_len);
+            }
+            return;
+        case 3:
+            for (i = 0; i <= height; i++)
+            {
+                tri_len = triangle_base - (i * triangle_base) / height;
+                if (tri_len < 1)
+                    tri_len = 1;
+
+                draw_row = row - height + i;
+                draw_col = col - tri_len + 1;
+
+                plot_horizontal_line(base, draw_row, draw_col, tri_len);
+            }
+            return;
+        default:
+            return;
+    }
+}
 /*----- Function: plot_8bit_bitmap -----
 
  PURPOSE: Plots a bitmap to the screen given by the top left pixel of the bitmap and the height of bitmap.
