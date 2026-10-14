@@ -43,24 +43,24 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
     int byte2 = (col + width - 1) >> 3; /* first/last byte */
 
     int bit1 = col & 7;
-    int bit2 = (col + width - 1) & 7; /* first/last byte */
+    int bit2 = (col + width - 1) & 7; /* first/last bit */
 
     UINT8 mask;
 
     int i;
     int j; /* loop vars */
 
-    for (i = row; y < row + length; y++) {
+    for (i = row; i < row + length; i++) {
         for (j = byte1; j <= byte2; j++) {
             if (byte1 == byte2) {
                 mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
-                *(base + i * 80 + j) &= ~mask;
-            } else if (j = byte1) {
+                *(base + i * 80 + j) &= (UINT8)~mask;
+            } else if (j == byte1) {
                 mask = (UINT8)(0xFF >> bit1);
-                *(base + i * 80 + j) &= ~mask;
-            } else if (j = byte2) {
+                *(base + i * 80 + j) &= (UINT8)~mask;
+            } else if (j == byte2) {
                 mask = (UINT8)(0xFF << (7 - bit2));
-                *(base + i * 80 + j) &= ~mask;
+                *(base + i * 80 + j) &= (UINT8)~mask;
             } else {
                 *(base + i * 80 + j) = 0;
             }
@@ -68,7 +68,7 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
             /* essentially if it's an edge byte, do NOT wipe the whole thing. */
             /* accomplish this by cutting bits off a UINT8 then doing inverse of that */
         }
-}
+    }
 }
 /*----- Function: plot_pixel -----
 
@@ -102,10 +102,53 @@ void plot_pixel(UINT8 *base, int row, int col)
 */
 void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length);
 
+void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
+{
+    if (length == 0) return; /* if the size happens to be 0, don't make it do anything */
+    int byte1 = col >> 3;
+    int byte2 = (col + width - 1) >> 3; /* first/last byte */
+
+    int bit1 = col & 7;
+    int bit2 = (col + width - 1) & 7; /* first/last bit */
+
+    UINT8 mask;
+
+    int j; /* loop vars */
+
+    /* it's basically the same as clear region, except that it will be doing it for one row. */
+
+    for (j = byte1; j <= byte2; j++)
+    {
+        if (byte1 == byte2)
+        {
+            mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
+            *(base + row * 80 + j) |= (UINT8)mask;
+        }
+        else if (j == byte1)
+        {
+            mask = (UINT8)(0xFF >> bit1);
+            *(base + row * 80 + j) |= (UINT8)mask;
+        }
+        else if (j == byte2)
+        {
+            mask = (UINT8)(0xFF << (7 - bit2));
+            *(base + row * 80 + j) |= (UINT8)mask;
+        }
+        else
+        {
+            *(base + row * 80 + j) = -1; /* -1 is the equivalent of 0xFF for however large the data size is. */
+        }
+
+        /* essentially if it's an edge byte, do NOT wipe the whole thing. */
+        /* accomplish this by cutting bits off a UINT8 */
+    }
+
+}
+
 
 /*----- Function: plot_vertical_line -----
 
- PURPOSE: Plot a hoizontal line on the screen. The vertical line is specified by the topmost pixel of the line and the length of the line.
+ PURPOSE: Plot a vertical line on the screen. The vertical line is specified by the topmost pixel of the line and the length of the line.
 
  INPUT: Address(UINT32*): to the start of the screen
         Position(row,col): the coordinates of the topmost pixel of the vertical line
@@ -115,6 +158,15 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length);
 */
 void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length);
 
+void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
+{
+    int i;
+    for (i = 0; i < length; i++) {
+        plot_pixel(base, row + i, col);
+    }
+    /* there probably isn't a more efficient way to draw a line tbh */
+    /* given that you can't just fully colour entire bytes. */
+}
 
 /*----- Function: plot_line -----
 
@@ -127,7 +179,7 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length);
  OUTPUT: None
 */
 void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col);
-
+/* go implement Bresenham’s Line Algorithm for this. */
 
 /*----- Function: plot_rectangle -----
 
@@ -141,6 +193,7 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
  OUTPUT: None
 */
 void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
+/* should be the opposite of clear_region. */
 
 
 /*----- Function: plot_square -----
@@ -154,7 +207,11 @@ void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
  OUTPUT: None
 */
 void plot_square(UINT32 *base, int row, int col, UINT16 side);
-
+/* should be pretty much equivalent to plot rect. probably could reuse the entire function */
+void plot_square(UINT32 *base, int row, int col, UINT16 side) 
+{
+    plot_rectangle(base, row, col, side, side);
+}
 
 /*----- Function: plot_triangle -----
 
