@@ -63,4 +63,4 @@ struct StaminaBar {
     int positionY;
     int size;
 
-}
+};
