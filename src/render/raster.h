@@ -203,30 +203,54 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
     int sy = (start_row < end_row) ? 1 : -1;
 
     /* create decision parameter, p = 2dy - x*/
-    int p = (dy<<1) - dx;
+    int p;
 
     int x = start_col;
     int y = start_row;
 
-    /* step through X, from x0 to x1 */
-    for (x = start_col; x < end_col; x+=sx) {
-        /* plot pixel at x,y */
-        plot_pixel(base, y, x);
 
-        /* if p < 0, p = p + 2dy */
-        /* ^^ don't change the Y */
-        if (p < 0) {
-            p += dy<<1;
-        } else {
-            /* if p ≥ 0, p = p + 2dy - 2dx*/
-            /* add 1 to y. */
-            p += (dy<<1) - (dx<<1);
-            y += sy;
+    if (dx >= dy) {
+        p = (dy<<1) - dx;
+        /* step through X, from x0 to x1 */
+        for (x = start_col; x < end_col; x+=sx) {
+            /* plot pixel at x,y */
+            plot_pixel(base, y, x);
+
+            /* if p < 0, p = p + 2dy */
+            /* ^^ don't change the Y */
+            if (p < 0) {
+                p += dy<<1;
+            } else {
+                /* if p ≥ 0, p = p + 2dy - 2dx*/
+                /* add 1 to y. */
+                p += (dy<<1) - (dx<<1);
+                y += sy;
+            }
+
+            /* increment X by 1. */
+            /* ^^ in loop */
+
         }
+    } else {
+        /* given that normally this is good for mainly horizontal lines, this allows for vertical to also work. */
+        /* step through Y, from y0 to y1 */
+        p = (dx << 1) - dy;
+        for (y = start_row; y < end_row; y += sy)
+        {
 
-        /* increment X by 1. */
-        /* ^^ in loop */
+            plot_pixel(base, y, x);
 
+
+            if (p < 0)
+            {
+                p += dx << 1;
+            }
+            else
+            {
+                p += (dx << 1) - (dy << 1);
+                x += sx;
+            }
+        }
     }
 }
 
