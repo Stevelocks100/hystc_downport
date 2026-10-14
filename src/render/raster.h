@@ -1,6 +1,11 @@
 #ifndef RASTER_H
 #define RASTER_H
 
+#include "stdio.h"
+#include "osbind.h"
+#include "types.h"
+#include "globals.h"
+
 /*----- Function: clear_screen -----
 v
  PURPOSE: Clears the entire screen.
@@ -12,6 +17,10 @@ v
 */
 void clear_screen(UINT32 *base);
 
+void clear_screen(UINT32 *base)
+{
+    printf("\033E\033f\n"); /* blank the screen */
+}
 
 /*----- Function: clear_region -----
 
@@ -27,7 +36,40 @@ void clear_screen(UINT32 *base);
 */
 void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
 
+void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
+{
+    if (length == 0 || width == 0) return; /* if the size happens to be 0, don't make it do anything */
+    int byte1 = col >> 3;
+    int byte2 = (col + width - 1) >> 3; /* first/last byte */
 
+    int bit1 = col & 7;
+    int bit2 = (col + width - 1) & 7; /* first/last byte */
+
+    UINT8 mask;
+
+    int i;
+    int j; /* loop vars */
+
+    for (i = row; y < row + length; y++) {
+        for (j = byte1; j <= byte2; j++) {
+            if (byte1 == byte2) {
+                mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
+                *(base + i * 80 + j) &= ~mask;
+            } else if (j = byte1) {
+                mask = (UINT8)(0xFF >> bit1);
+                *(base + i * 80 + j) &= ~mask;
+            } else if (j = byte2) {
+                mask = (UINT8)(0xFF << (7 - bit2));
+                *(base + i * 80 + j) &= ~mask;
+            } else {
+                *(base + i * 80 + j) = 0;
+            }
+            
+            /* essentially if it's an edge byte, do NOT wipe the whole thing. */
+            /* accomplish this by cutting bits off a UINT8 then doing inverse of that */
+        }
+}
+}
 /*----- Function: plot_pixel -----
 
  PURPOSE: Plots a single pixel on the screen.
@@ -39,6 +81,13 @@ void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
 
 */
 void plot_pixel(UINT8 *base, int row, int col);
+
+void plot_pixel(UINT8 *base, int row, int col)
+{
+    if (col >= 0 && col < SCREEN_WIDTH && row >= 0 && row < SCREEN_HEIGHT)
+        *(base + row * 80 + (col >> 3)) |= 1 << (7 - (col & 7));
+    /* this code is from an earlier tutorial or lecture */
+}
 
 
 /*----- Function: plot_horizontal_line -----
