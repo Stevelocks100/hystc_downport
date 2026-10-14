@@ -181,6 +181,55 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
 void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col);
 /* go implement Bresenham’s Line Algorithm for this. */
 
+void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col)
+{
+
+    /* calculate deltas (x1 - x0), for both X and Y */
+    int dx = abs(end_col - start_col);
+    int dy = abs(end_row - start_row);
+
+    /* don't do some fancy algorithm when you can simplify straight lines */
+    if (dx == 0) {
+        plot_vertical_line(base, start_row, start_col, dy);
+        return;
+    }
+    if (dy == 0) {
+        plot_horizontal_line(base, start_row, start_col, dx);
+        return;
+    }
+
+    /* to account for if start is larger than end. */
+    int sx = (start_col < end_col) ? 1 : -1;
+    int sy = (start_row < end_row) ? 1 : -1;
+
+    /* create decision parameter, p = 2dy - x*/
+    int p = (dy<<1) - dx;
+
+    int x = start_col;
+    int y = start_row;
+
+    /* step through X, from x0 to x1 */
+    for (x = start_col; x < end_col; x+=sx) {
+        /* plot pixel at x,y */
+        plot_pixel(base, y, x);
+
+        /* if p < 0, p = p + 2dy */
+        /* ^^ don't change the Y */
+        if (p < 0) {
+            p += dy<<1;
+        } else {
+            /* if p ≥ 0, p = p + 2dy - 2dx*/
+            /* add 1 to y. */
+            p += (dy<<1) - (dx<<1);
+            y += sy;
+        }
+
+        /* increment X by 1. */
+        /* ^^ in loop */
+
+    }
+}
+
 /*----- Function: plot_rectangle -----
 
  PURPOSE: Plots a rectangle on the screen given by the top left pixel, and the length and width of the rectangle.
