@@ -1,4 +1,15 @@
-something something atari game
+
+
+# Checkpoint 2
+- Object Type Models ✅
+- Main Game Model ❌
+  - Object Behaviour Functions ❌
+  - Event Handler functions ❌
+  - Test Driver ❌
+- Raster Graphics library ❌
+  - test driver ❌
+- Renderer module ❌
+  - test driver ❌
 
 
 for later:
