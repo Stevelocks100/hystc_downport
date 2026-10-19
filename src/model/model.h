@@ -4,11 +4,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+typedef enum {NORTH, EAST, SOUTH, WEST}Direction; //this should probably be moved to its own file later
 typedef struct {
     int positionX;
     int positionY;
     bool flashlight;
-    uint8_t direction; 
+    Direction direction;
     bool safe;
     int speed;
 }Player;
@@ -72,6 +73,7 @@ typedef struct {
     Cat cats[5];
     CopyCat copycat;
     DisposalBin disposal;
+    Door bunkerDoor;
     Terminal terminal;
     GameOver endScr;
     NoiseTrap traps[10]; //PROBABLY CHANGE THIS VALUE AT SOME POINT
