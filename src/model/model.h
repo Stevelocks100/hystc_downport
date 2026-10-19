@@ -76,6 +76,6 @@ typedef struct {
     GameOver endScr;
     NoiseTrap traps[10]; //PROBABLY CHANGE THIS VALUE AT SOME POINT
     StaminaBar stamBar;
-}Game;
+}Model;
 
 #endif
