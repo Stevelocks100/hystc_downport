@@ -446,6 +446,38 @@ void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 
 */
 void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height);
 
+void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height)
+{
+    if (height == 0) return; /* if the size happens to be 0, don't make it do anything */
+    
+    int byte1 = col >> 3;
+    int bit1 = col & 7;
+
+    
+
+    int i;
+    UINT8 mask;
+    UINT8 *dest;
+    UINT8 pixels;
+    UINT8 mask1;
+    UINT8 mask2; /* left/right mask */
+
+    for (i = 0; i < height; i++) {
+        dest = base + (row + i) * SCREEN_WIDTH_BYTES + byte1;
+        pixels = bitmap[i];
+
+        if (bit1 == 0) {
+            *dest = pixels;
+        } else {
+            mask1 = (UINT8)(0xFF >> bit1);
+            mask2 = (UINT8)(0xFF << (8 - bit1));
+
+            *dest = (UINT8)((dest & (UINT8)~mask1) | (pixels >> bit1));
+
+            *(dest + 1) = (UINT8)((*(dest + 1) & (UINT8)~mask2) | (pixels << (8 - bit1)));
+        }
+    }
+}
 
 /*----- Function: plot_16bit_bitmap -----
 
@@ -459,7 +491,23 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
 */
 void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height);
 
+void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height)
+{
+    int i;
+    UINT16 pixels;
+    UINT8 part1;
+    UINT8 part2;
 
+
+    for (i = 0; i < height; i++) {
+        pixels = bitmap[i];
+        part1 = (UINT8)(pixels >> 8);
+        part2 = (UINT8)pixels; /* hopefully truncate the first 8 bits */
+
+        plot_8bit_bitmap(base, row + i, col, &part1, 1);
+        plot_8bit_bitmap(base, row + i, col + 8, &part2, 1);
+    }
+}
 /*----- Function: plot_32bit_bitmap -----
 
  PURPOSE: Plots a bitmap to the screen given by the top left pixel of the bitmap and the height of bitmap.
@@ -472,6 +520,23 @@ void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UIN
 */
 void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height);
 
+void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height)
+{
+    int i;
+    UINT32 pixels;
+    UINT16 part1;
+    UINT16 part2;
+
+    for (i = 0; i < height; i++)
+    {
+        pixels = bitmap[i];
+        part1 = (UINT16)(pixels >> 16);
+        part2 = (UINT16)pixels; /* hopefully truncate the first 16 bits */
+
+        plot_16bit_bitmap(base, row + i, col, &part1, 1);
+        plot_16bit_bitmap(base, row + i, col + 16, &part2, 1);
+    }
+}
 
 /*----- Function: plot_character -----
 
