@@ -543,12 +543,27 @@ void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UIN
  PURPOSE: Plots a single character, as a bitmap from a font table, to the screen.
 
  INPUT: Address(UINT8*): to the start of the screen
+        Address(UINT8*): to a font map
         Position(row,col): the coordinates of the top left pixel of the character
         ch(char): the character to be written to the screen
 
  OUTPUT: None
 */
-void plot_character(UINT8 *base, int row, int col, char ch);
+void plot_character(UINT8 *base, UINT8 *font, int row, int col, char ch);
+
+void plot_character(UINT8 *base, UINT8 *font, int row, int col, char ch)
+{
+    int i;
+    const UINT8 *glyph;
+
+    glyph = font + ch * 16;
+
+    for (i = 0; i < 16; i++) {
+        plot_8bit_bitmap(base, row, col, glyph + i, 1);
+    }
+
+}
+
 
 
 /*----- Function: plot_string -----
@@ -562,5 +577,18 @@ void plot_character(UINT8 *base, int row, int col, char ch);
  OUTPUT: None
 */
 void plot_string(UINT8 *base, int row, int col, char *ch);
+
+void plot_string(UINT8 *base, int row, int col, char *ch)
+{
+    int i;
+    i = 0;
+
+    while (ch[i] != '\0')
+    {
+        plot_character(base, font, row, col, ch[i]);
+        col += 8;
+        i++;
+    }
+}
 
 #endif
