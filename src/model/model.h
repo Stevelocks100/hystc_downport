@@ -4,30 +4,11 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-typedef enum {NORTH, EAST, SOUTH, WEST}Direction; //this should probably be moved to its own file later
-typedef struct {
-    int positionX;
-    int positionY;
-    bool flashlight;
-    Direction direction;
-    bool safe;
-    int speed;
-}Player;
+
 
 
 typedef struct {
-    int positionX;
-    int positionY;
-    enum Trait trait1;
-    enum Trait trait2;
-    bool shaking;
-    bool found;
-    bool moving;
-}Cat;
-
-typedef struct {
-    int positionX;
-    int positionY;
+    int position[2];
     int state;
     bool moving;
     bool caught;
@@ -63,8 +44,7 @@ typedef struct {
 typedef struct {
     int stamina;
     int staminaTotal;
-    int positionX;
-    int positionY;
+    int position[2];
     int size;
 }StaminaBar;
 

@@ -8,4 +8,5 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 400
 
+#define ROOM_SIZE 9
 #endif
