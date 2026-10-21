@@ -5,8 +5,8 @@
 
 #include "stdio.h"
 #include "osbind.h"
-#include "types.h"
-#include "globals.h"
+#include "../include/types.h"
+#include "../include/globals.h"
 
 /*----- Function: clear_screen -----
 v
@@ -17,9 +17,9 @@ v
  OUTPUT: None
 
 */
-void clear_screen(UINT32 *base);
+void clear_screen(UINT8 *base);
 
-void clear_screen(UINT32 *base)
+void clear_screen(UINT8 *base)
 {
     printf("\033E\033f\n"); /* blank the screen */
 }
@@ -36,21 +36,31 @@ void clear_screen(UINT32 *base)
  OUTPUT: None
 
 */
-void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
+void clear_region(UINT8 *base, int row, int col, UINT16 length, UINT16 width);
 
-void clear_region(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
+void clear_region(UINT8 *base, int row, int col, UINT16 length, UINT16 width)
 {
-    if (length == 0 || width == 0) return; /* if the size happens to be 0, don't make it do anything */
-    int byte1 = col >> 3;
-    int byte2 = (col + width - 1) >> 3; /* first/last byte */
-
-    int bit1 = col & 7;
-    int bit2 = (col + width - 1) & 7; /* first/last bit */
-
-    UINT8 mask;
-
+    int byte1;
+    int byte2;
+    int bit1;
+    int bit2;
     int i;
     int j; /* loop vars */
+    UINT8 mask;
+    
+
+    if (length == 0 || width == 0)
+    {
+        return; /* if the size happens to be 0, don't make it do anything */
+    }
+
+    byte1 = col >> 3;
+    byte2 = (col + width - 1) >> 3; /* first/last byte */
+
+    bit1 = col & 7;
+    bit2 = (col + width - 1) & 7; /* first/last bit */
+
+    
 
     for (i = row; i < row + length; i++) {
         for (j = byte1; j <= byte2; j++) {
@@ -86,9 +96,10 @@ void plot_pixel(UINT8 *base, int row, int col);
 
 void plot_pixel(UINT8 *base, int row, int col)
 {
-    if (col >= 0 && col < SCREEN_WIDTH && row >= 0 && row < SCREEN_HEIGHT)
+    if (col >= 0 && col < SCREEN_WIDTH && row >= 0 && row < SCREEN_HEIGHT) {
         *(base + row * SCREEN_WIDTH_BYTES + (col >> 3)) |= 1 << (7 - (col & 7));
     /* this code is from an earlier tutorial or lecture */
+    }
 }
 
 
@@ -102,20 +113,26 @@ void plot_pixel(UINT8 *base, int row, int col)
 
  OUTPUT: None
 */
-void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length);
+void plot_horizontal_line(UINT8 *base, int row, int col, UINT16 length);
 
-void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
-{
-    if (length == 0) return; /* if the size happens to be 0, don't make it do anything */
-    int byte1 = col >> 3;
-    int byte2 = (col + width - 1) >> 3; /* first/last byte */
-
-    int bit1 = col & 7;
-    int bit2 = (col + width - 1) & 7; /* first/last bit */
-
+void plot_horizontal_line(UINT8 *base, int row, int col, UINT16 length)
+{ 
+    int byte1;
+    int byte2; /* first/last byte */
+    int bit1;
+    int bit2; /* first/last bit */
+    int j; /* loop vars */
     UINT8 mask;
 
-    int j; /* loop vars */
+    byte1 = col >> 3;
+    byte2 = (col + length - 1) >> 3;
+    bit1 = col & 7;
+    bit2 = (col + length - 1) & 7;
+
+    if (length == 0)
+    {
+        return; /* if the size happens to be 0, don't make it do anything */
+    }
 
     /* it's basically the same as clear region, except that it will be doing it for one row. */
 
@@ -158,9 +175,9 @@ void plot_horizontal_line(UINT32 *base, int row, int col, UINT16 length)
 
  OUTPUT: None
 */
-void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length);
+void plot_vertical_line(UINT8 *base, int row, int col, UINT16 length);
 
-void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
+void plot_vertical_line(UINT8 *base, int row, int col, UINT16 length)
 {
     int i;
     for (i = 0; i < length; i++) {
@@ -180,15 +197,29 @@ void plot_vertical_line(UINT32 *base, int row, int col, UINT16 length)
 
  OUTPUT: None
 */
-void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col);
+void plot_line(UINT8 *base, int start_row, int start_col, int end_row, int end_col);
 /* go implement Bresenham’s Line Algorithm for this. */
 
-void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_col)
+void plot_line(UINT8 *base, int start_row, int start_col, int end_row, int end_col)
 {
 
-    /* calculate deltas (x1 - x0), for both X and Y */
-    int dx = abs(end_col - start_col);
-    int dy = abs(end_row - start_row);
+    int dx; /* calculate deltas (x1 - x0), for both X and Y */
+    int dy;
+    int sx; /* to account for if start is larger than end. */
+    int sy;
+
+    int p; /* create decision parameter, p = 2dy - x*/
+    int x;
+    int y;
+
+    dx = abs(end_col - start_col);
+    dy = abs(end_row - start_row);
+
+    sx = (start_col < end_col) ? 1 : -1;
+    sy = (start_row < end_row) ? 1 : -1;
+
+    x = start_col;
+    y = start_row;
 
     /* don't do some fancy algorithm when you can simplify straight lines */
     if (dx == 0) {
@@ -200,15 +231,7 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
         return;
     }
 
-    /* to account for if start is larger than end. */
-    int sx = (start_col < end_col) ? 1 : -1;
-    int sy = (start_row < end_row) ? 1 : -1;
 
-    /* create decision parameter, p = 2dy - x*/
-    int p;
-
-    int x = start_col;
-    int y = start_row;
 
 
     if (dx >= dy) {
@@ -221,7 +244,7 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
             /* if p < 0, p = p + 2dy */
             /* ^^ don't change the Y */
             if (p < 0) {
-                p += dy<<1;
+                p += (dy<<1);
             } else {
                 /* if p ≥ 0, p = p + 2dy - 2dx*/
                 /* add 1 to y. */
@@ -267,24 +290,29 @@ void plot_line(UINT32 *base, int start_row, int start_col, int end_row, int end_
 
  OUTPUT: None
 */
-void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width);
+void plot_rectangle(UINT8 *base, int row, int col, UINT16 length, UINT16 width);
 /* should be the opposite of clear_region. */
 
-void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
-{
-    if (length == 0 || width == 0)
-        return; /* if the size happens to be 0, don't make it do anything */
-        
-    int byte1 = col >> 3;
-    int byte2 = (col + width - 1) >> 3; /* first/last byte */
+void plot_rectangle(UINT8 *base, int row, int col, UINT16 length, UINT16 width)
+{        
 
-    int bit1 = col & 7;
-    int bit2 = (col + width - 1) & 7; /* first/last bit */
-
+    int byte1;
+    int byte2;
+    int bit1;
+    int bit2;
     UINT8 mask;
-
     int i;
     int j; /* loop vars */
+    
+    if (length == 0 || width == 0) {
+        return; /* if the size happens to be 0, don't make it do anything */
+    }
+
+    byte1 = col >> 3;
+    byte2 = (col + width - 1) >> 3; /* first/last byte */
+
+    bit1 = col & 7;
+    bit2 = (col + width - 1) & 7; /* first/last bit */
 
     for (i = row; i < row + length; i++)
     {
@@ -328,9 +356,9 @@ void plot_rectangle(UINT32 *base, int row, int col, UINT16 length, UINT16 width)
 
  OUTPUT: None
 */
-void plot_square(UINT32 *base, int row, int col, UINT16 side);
+void plot_square(UINT8 *base, int row, int col, UINT16 side);
 /* should be pretty much equivalent to plot rect. probably could reuse the entire function */
-void plot_square(UINT32 *base, int row, int col, UINT16 side) 
+void plot_square(UINT8 *base, int row, int col, UINT16 side) 
 {
     plot_rectangle(base, row, col, side, side);
 }
@@ -352,12 +380,10 @@ void plot_square(UINT32 *base, int row, int col, UINT16 side)
 
  OUTPUT: None
 */
-void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction);
+void plot_triangle(UINT8 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction);
 
-void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction)
+void plot_triangle(UINT8 *base, int row, int col, UINT16 triangle_base, UINT16 height, UINT8 direction)
 {
-
-    if (triangle_base == 0 || height == 0) return;
 
     /* for myself to comprehend the triangles:
      * 0 = |‾/
@@ -376,7 +402,9 @@ void plot_triangle(UINT32 *base, int row, int col, UINT16 triangle_base, UINT16 
     int i;
     int tri_len; /* triangle_length */
 
-    int draw_col,draw_row;
+    int draw_col;
+    int draw_row;
+
     switch (direction) {
         case 0:
             for (i = 0; i <= height; i++) 
@@ -448,19 +476,22 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
 
 void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16 height)
 {
-    if (height == 0) return; /* if the size happens to be 0, don't make it do anything */
-    
-    int byte1 = col >> 3;
-    int bit1 = col & 7;
 
-    
-
+    int byte1;
+    int bit1;
     int i;
     UINT8 mask;
     UINT8 *dest;
     UINT8 pixels;
     UINT8 mask1;
     UINT8 mask2; /* left/right mask */
+
+    byte1 = col >> 3;
+    bit1 = col & 7;
+
+    if (height == 0) {
+        return; /* if the size happens to be 0, don't make it do anything */
+    }
 
     for (i = 0; i < height; i++) {
         dest = base + (row + i) * SCREEN_WIDTH_BYTES + byte1;
@@ -472,7 +503,7 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
             mask1 = (UINT8)(0xFF >> bit1);
             mask2 = (UINT8)(0xFF << (8 - bit1));
 
-            *dest = (UINT8)((dest & (UINT8)~mask1) | (pixels >> bit1));
+            *dest = (UINT8)((*dest & (UINT8)~mask1) | (pixels >> bit1));
 
             *(dest + 1) = (UINT8)((*(dest + 1) & (UINT8)~mask2) | (pixels << (8 - bit1)));
         }
@@ -489,9 +520,9 @@ void plot_8bit_bitmap(UINT8 *base, int row, int col, const UINT8 *bitmap, UINT16
 
  OUTPUT: None
 */
-void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height);
+void plot_16bit_bitmap(UINT8 *base, int row, int col, const UINT16 *bitmap, UINT16 height);
 
-void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UINT16 height)
+void plot_16bit_bitmap(UINT8 *base, int row, int col, const UINT16 *bitmap, UINT16 height)
 {
     int i;
     UINT16 pixels;
@@ -518,9 +549,9 @@ void plot_16bit_bitmap(UINT16 *base, int row, int col, const UINT16 *bitmap, UIN
 
  OUTPUT: None
 */
-void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height);
+void plot_32bit_bitmap(UINT8 *base, int row, int col, const UINT32 *bitmap, UINT16 height);
 
-void plot_32bit_bitmap(UINT32 *base, int row, int col, const UINT32 *bitmap, UINT16 height)
+void plot_32bit_bitmap(UINT8 *base, int row, int col, const UINT32 *bitmap, UINT16 height)
 {
     int i;
     UINT32 pixels;
@@ -554,12 +585,12 @@ void plot_character(UINT8 *base, UINT8 *font, int row, int col, char ch);
 void plot_character(UINT8 *base, UINT8 *font, int row, int col, char ch)
 {
     int i;
-    const UINT8 *glyph;
+    UINT8 *glyph;
 
-    glyph = font + ch * 16;
+    glyph = font + ch * (UINT8)16;
 
     for (i = 0; i < 16; i++) {
-        plot_8bit_bitmap(base, row, col, glyph + i, 1);
+        plot_8bit_bitmap(base, row + i, col, glyph + i * 256, 1);
     }
 
 }
@@ -571,14 +602,15 @@ void plot_character(UINT8 *base, UINT8 *font, int row, int col, char ch)
  PURPOSE: Plots a string, as a sequence of bitmaps from a font table, to the screen.
 
  INPUT: Address(UINT8*): to the start of the screen
+        Address(UINT8*): to a font map
         Position(row,col): the coordinates of the top left pixel of the string
         ch(c-string): the string to be written to the screen
 
  OUTPUT: None
 */
-void plot_string(UINT8 *base, int row, int col, char *ch);
+void plot_string(UINT8 *base, UINT8 *font, int row, int col, char *ch);
 
-void plot_string(UINT8 *base, int row, int col, char *ch)
+void plot_string(UINT8 *base, UINT8 *font, int row, int col, char *ch)
 {
     int i;
     i = 0;

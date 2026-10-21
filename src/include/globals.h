@@ -9,4 +9,12 @@
 #define SCREEN_HEIGHT 400
 
 #define ROOM_SIZE 9
+
+int abs(int x);
+int abs(int x) {
+    if (x < 0) {
+        return -x;
+    }
+}
+
 #endif
