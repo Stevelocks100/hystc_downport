@@ -41,3 +41,6 @@ replay_*.log
 
 #
 A.OUT
+
+#clangd
+.clangd
