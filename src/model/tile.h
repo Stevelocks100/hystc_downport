@@ -1,27 +1,25 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include "player.h"
+#include "cat.h"
+#include "copycat.h"
+#include "noisetrap.h"
 
 //Tile
 typedef enum {NORMAL, SAFE, WALL, NOISETRAP, PROP, DISPOSALBIN, TERMINAL, EXIT, ELEVATOR}TileType;
 typedef struct {
-    int positionX;
-    int positionY;
     TileType type;
-    bool player;
-    bool cat;
-    bool copyCat;
+    Player *player;
+    Cat *cat;
+    CopyCat *copyCat;
+    NoiseTrap trap;
 }Tile;
 
-bool hasPlayer(Tile tile);
+Tile movePlayer(Tile* startPtr, Tile* endPtr, Player* playerPtr);
 
-void togglePlayer(Tile tile);
+Tile moveCat(Tile* startPtr, Tile* endPtr, Cat* catPtr);
 
-bool hasCat(Tile tile);
+Tile moveCopyCat(Tile* startPtr, Tile* endPtr, CopyCat* copyCatPtr);
 
-void toggleCat(Tile tile);
-
-bool hasCopyCat(Tile tile);
-
-void toggleCopyCat(Tile tile);
 #endif

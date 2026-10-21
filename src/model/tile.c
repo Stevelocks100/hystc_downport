@@ -1,26 +1,44 @@
-#include <stdbool.h>
 #include "tile.h"
+#include <stdlib.h>
 
-bool hasPlayer(Tile tile){
-    return tile.player;
+Tile movePlayer(Tile* startPtr, Tile* endPtr, Player* playerPtr) {
+    if((*endPtr).type == WALL) { /*does nothing if destination is a wall*/
+        return *startPtr;   
+    }else {
+        (*startPtr).player = NULL;
+        (*endPtr).player = playerPtr;
+        if((*endPtr).type == NOISETRAP){
+            /*TODO NOISETRAP CALL*/
+        };
+        return *endPtr;
+    };
 };
 
-void togglePlayer(Tile tile){
-    tile.player = !tile.player;
+Tile moveCat(Tile* startPtr, Tile* endPtr, Cat* catPtr) {
+    if((*endPtr).type == WALL) { /*does nothing if destination is a wall*/
+        return *startPtr;   
+    }else {
+        (*startPtr).cat = NULL;
+        (*endPtr).cat = catPtr;
+        if((*endPtr).type == NOISETRAP){
+            /*TODO NOISETRAP CALL*/
+        };
+        return *endPtr;
+    };
 };
 
-bool hasCat(Tile tile){
-    return tile.cat;
+
+Tile moveCopyCat(Tile* startPtr, Tile* endPtr, CopyCat* copyCatPtr) {
+    if((*endPtr).type == WALL) { /*does nothing if destination is a wall*/
+        return *startPtr;   
+    }else {
+        (*startPtr).copyCat = NULL;
+        (*endPtr).copyCat = copyCatPtr;
+        if((*endPtr).type == NOISETRAP){
+            /*TODO NOISETRAP CALL*/
+        };
+        return *endPtr;
+    };
 };
 
-void toggleCat(Tile tile) {
-    tile.cat = !tile.cat;
-};
 
-bool hasCopyCat(Tile tile) {
-    return tile.copyCat;
-};
-
-void toggleCopyCat(Tile tile) {
-    tile.copyCat = !tile.copyCat;
-};

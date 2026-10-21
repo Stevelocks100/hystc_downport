@@ -2,7 +2,6 @@
 #define PLAYER_H
 
 #include "../include/globals.h"
-#include "tile.h"
 
 typedef enum {NORTH, EAST, SOUTH, WEST}Direction; 
 typedef struct {
@@ -12,10 +11,6 @@ typedef struct {
     bool safe;
     int speed;
 }Player;
-
-void move(Player player, int positionX, int positionY);
-    
-void playerCollisionCheck(Player player, Tile tile);
 
 void flashToggle(Player player);
 

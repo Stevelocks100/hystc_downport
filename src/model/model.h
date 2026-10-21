@@ -7,13 +7,6 @@
 
 
 
-typedef struct {
-    int position[2];
-    int state;
-    bool moving;
-    bool caught;
-    bool render;
-}CopyCat;
 
 typedef struct {
     bool open;
