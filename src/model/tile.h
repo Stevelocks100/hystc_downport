@@ -20,6 +20,6 @@ Tile movePlayer(Tile* startPtr, Tile* endPtr, Player* playerPtr);
 
 Tile moveCat(Tile* startPtr, Tile* endPtr, Cat* catPtr);
 
-Tile moveCopyCat(Tile* startPtr, Tile* endPtr, CopyCat* copyCatPtr);
+Tile moveCopyCat(Tile* start, Tile* end, CopyCat* copyCatPtr);
 
 #endif
