@@ -1,12 +1,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "trait.h"
+#include "staminabar.h"
 #ifndef MODEL_H
 #define MODEL_H
 
 
 
-
+/* see if these can be moved to their respective .h files and whatnot */
 
 typedef struct {
     bool open;
@@ -33,13 +34,6 @@ typedef struct {
 typedef struct {
     int type;
 }NoiseTrap;
-
-typedef struct {
-    int stamina;
-    int staminaTotal;
-    int position[2];
-    int size;
-}StaminaBar;
 
 typedef struct {
     Player player;
