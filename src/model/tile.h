@@ -6,7 +6,7 @@
 #include "copycat.h"
 #include "noisetrap.h"
 
-//Tile
+/* Tile */
 typedef enum {NORMAL, SAFE, WALL, NOISETRAP, PROP, DISPOSALBIN, TERMINAL, EXIT, ELEVATOR}TileType;
 typedef struct {
     TileType type;

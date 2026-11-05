@@ -1,7 +1,7 @@
 #include "staminabar.h"
 
 
-void draw(UINT8 *base, StaminaBar stamBar)
+void draw_staminabar(UINT8 *base, StaminaBar stamBar)
 {
     plot_rectangle(base, stamBar.position[0], stamBar.position[1], stamBar.staminaTotal + 2, stamBar.height + 2);
 
@@ -11,7 +11,7 @@ void draw(UINT8 *base, StaminaBar stamBar)
     }
 }
 
-void init(StaminaBar stamBar)
+void init_staminabar(StaminaBar stamBar)
 {
     /* to fill the variables */
     stamBar.stamina = 100;
@@ -21,7 +21,7 @@ void init(StaminaBar stamBar)
     stamBar.cooldown = 0;
 }
 
-void tick(StaminaBar stamBar, bool active)
+void tick_staminabar(StaminaBar stamBar, bool active)
 {
     if (active)
     {

@@ -31,9 +31,6 @@ typedef struct {
     bool visible;
 }GameOver;
 
-typedef struct {
-    int type;
-}NoiseTrap;
 
 typedef struct {
     Player player;

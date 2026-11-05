@@ -4,6 +4,7 @@
 #include "render/raster.h"
 #include "include/types.h"
 #include "math.h"
+#include <stdbool.h>
 
 /* math needed for min/max */
 
@@ -25,11 +26,11 @@ typedef struct
 
 /* hypothetically, function overrides exist. */
 
-void draw(UINT8 *base, StaminaBar stamBar);
+void draw_staminabar(UINT8 *base, StaminaBar stamBar);
 
-void init(StaminaBar stamBar);
+void init_staminabar(StaminaBar stamBar);
 
-void tick(StaminaBar stamBar, bool active);
+void tick_staminabar(StaminaBar stamBar, bool active);
 
 bool can_run(StaminaBar stamBar);
 
