@@ -1,6 +1,6 @@
 #include "input.h"
 
-bool has_input() {
+bool has_input() {/*Returns a byte of ascii info*/
     return Cconis();
 };
 
