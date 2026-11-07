@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "trait.h"
 #include "staminabar.h"
+#include "gameover.h"
 #ifndef MODEL_H
 #define MODEL_H
 
@@ -27,9 +28,6 @@ typedef struct {
     int col3;
 }TerminalPuzzle;
 
-typedef struct {
-    bool visible;
-}GameOver;
 
 
 typedef struct {
