@@ -17,6 +17,10 @@
     - Floor (likely blank)
     - Noisetraps (2)
     - Wall
+    - Door
+    - Terminal
+    - Disposal Bin
+
 
 
 for later:
