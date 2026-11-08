@@ -10,6 +10,13 @@
   - test driver ❌
 - Renderer module ❌
   - test driver ❌
+  - Sprites
+    - Cat (anim)
+    - Player (anim, directions)
+    - Copycat (idle, moving, directions)
+    - Floor (likely blank)
+    - Noisetraps (2)
+    - Wall
 
 
 for later:
