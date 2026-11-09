@@ -5,7 +5,7 @@
 
 bool has_input();
 
-char get_input();
+unsigned long get_input();
 
 
 #endif
