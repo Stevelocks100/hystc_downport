@@ -18,7 +18,9 @@ void look(Player player, Direction direction);
 
 bool isSafe(Player player, int positionX, int positionY);//checks if the current tile is "safe"
 
-void setSpeed(Player player, int newSpeed);
+void turn(Player player, bool right);
 
+void update_position(Player player, int positionX, int positionY);
 
+void move(Player player, int speed);
 #endif
