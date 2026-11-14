@@ -32,6 +32,7 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
             break;
     };
 
+
 };
 
 void flashToggle(Player* player){
