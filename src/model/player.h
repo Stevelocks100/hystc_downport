@@ -10,11 +10,10 @@
 typedef enum {NORTH, EAST, SOUTH, WEST}Direction; 
 typedef struct {
     Vec2 mapCoords;
-    StaminaBar* staminaPtr;
+    StaminaBar staminaBar;
     bool flashlight;
     Direction lookDir;
     bool safe;
-    bool sprinting;
     int speed;
     int move_timer;
     bool moving;
