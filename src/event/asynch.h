@@ -86,5 +86,51 @@ void interact_request(Player *playerPtr, Cat *catPtr, Room *roomPtr){
         };
 };
 
+void look_dir_request(Player *playerPtr, bool right);
+
+void look_dir_request(Player *playerPtr, bool right) {
+    switch (playerPtr->lookDir) {
+        case NORTH:
+            if (right) {
+                playerPtr->lookDir = EAST;
+            } else {
+                playerPtr->lookDir = WEST;
+            }
+            break;
+        case EAST:
+            if (right)
+            {
+                playerPtr->lookDir = SOUTH;
+            }
+            else
+            {
+                playerPtr->lookDir = NORTH;
+            }
+            break;
+        case SOUTH:
+            if (right)
+            {
+                playerPtr->lookDir = WEST;
+            }
+            else
+            {
+                playerPtr->lookDir = EAST;
+            }
+            break;
+        case WEST:
+            if (right)
+            {
+                playerPtr->lookDir = NORTH;
+            }
+            else
+            {
+                playerPtr->lookDir = SOUTH;
+            }
+            break;
+    };
+
+};
+
+
 
 #endif
