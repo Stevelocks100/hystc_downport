@@ -31,23 +31,53 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
             playerPtr->mapCoords.y = destCoords.y;
             break;
     };
+};
 
+void turn(Player player, bool right) {
+    /* right == false means left */
+
+    switch (player.direction) {
+        case NORTH:
+            if (right) {
+                player.direction = EAST;
+            } else {
+                player.direction = WEST;
+            }
+            break;
+        case EAST:
+            if (right)
+            {
+                player.direction = SOUTH;
+            }
+            else
+            {
+                player.direction = NORTH;
+            }
+            break;
+        case SOUTH:
+            if (right)
+            {
+                player.direction = WEST;
+            }
+            else
+            {
+                player.direction = EAST;
+            }
+            break;
+        case WEST:
+            if (right)
+            {
+                player.direction = NORTH;
+            }
+            else
+            {
+                player.direction = SOUTH;
+            }
+            break;
+    };
 
 };
 
 void flashToggle(Player* player){
     (*player).flashlight = !(*player).flashlight;
-}
-
-void look(Player* player, Direction direction){
-    (*player).direction = direction;
 };
-bool isSafe(Player* player, int positionX, int positionY) {
-
-};
-
-void setSpeed(Player* player, int newSpeed){
-    (*player).speed = newSpeed;
-};
-
-

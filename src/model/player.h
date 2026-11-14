@@ -22,13 +22,7 @@ typedef struct {
 
 Vec2 movePlayer(Vec2 vec, Player* playerPtr, Room* roomPtr);
 
+void turn(Player player, bool right);
+
 void flashToggle(Player* player);
-
-void look(Player* player, Direction direction); 
-
-bool isSafe(Player* player, int positionX, int positionY);//checks if the current tile is "safe"
-
-void setSpeed(Player* player, int newSpeed);
-
-
 #endif

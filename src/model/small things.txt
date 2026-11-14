@@ -1,0 +1,1 @@
+remove noise traps from being its own object. this should be a boolean on a tile.
