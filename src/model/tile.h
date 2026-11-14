@@ -13,18 +13,7 @@ Rooms are 2D arrays of these tiles*/
 /* Tile */
 typedef enum {NORMAL, SAFE, WALL, NOISETRAP, PROP, DISPOSALBIN, TERMINAL, EXIT, ELEVATOR}TileType;
 typedef struct {
-    TileType type;
-    /*pointers to objects on this tile*/
-    Player *player;
-    Cat *cat;
-    CopyCat *copyCat;
-    NoiseTrap trap;
+    TileType type;/*set upon loading room*/
+    bool interactive;
 }Tile;
-
-Tile movePlayer(Tile* startPtr, Tile* endPtr, Player* playerPtr);
-
-Tile moveCat(Tile* startPtr, Tile* endPtr, Cat* catPtr);
-
-Tile moveCopyCat(Tile* start, Tile* end, CopyCat* copyCatPtr);
-
 #endif
