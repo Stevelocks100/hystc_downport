@@ -8,6 +8,7 @@
 #include "../model/staminabar.h"
 #include "../model/vec2.h"
 
+/*must be called after sprint_request*/
 void movement_request();
 void movement_request(Direction moveDir, Player* playerPtr, Room* roomPtr) {
     if(moveDir != playerPtr->lookDir)           /*reduces speed if movement penalty*/

@@ -33,45 +33,45 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
     };
 };
 
-void turn(Player player, bool right) {
+void turn(Player* playerPtr, bool right) {
     /* right == false means left */
 
-    switch (player.direction) {
+    switch (playerPtr->lookDir) {
         case NORTH:
             if (right) {
-                player.direction = EAST;
+                playerPtr->lookDir = EAST;
             } else {
-                player.direction = WEST;
+                playerPtr->lookDir = WEST;
             }
             break;
         case EAST:
             if (right)
             {
-                player.direction = SOUTH;
+                playerPtr->lookDir = SOUTH;
             }
             else
             {
-                player.direction = NORTH;
+                playerPtr->lookDir = NORTH;
             }
             break;
         case SOUTH:
             if (right)
             {
-                player.direction = WEST;
+                playerPtr->lookDir = WEST;
             }
             else
             {
-                player.direction = EAST;
+                playerPtr->lookDir = EAST;
             }
             break;
         case WEST:
             if (right)
             {
-                player.direction = NORTH;
+                playerPtr->lookDir = NORTH;
             }
             else
             {
-                player.direction = SOUTH;
+                playerPtr->lookDir = SOUTH;
             }
             break;
     };
