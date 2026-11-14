@@ -11,7 +11,7 @@
 /*must be called after sprint_request*/
 /*called every tick by game loop*/
 /*player.moving must be set each tick depending on input*/
-void movement_request();
+void movement_request(Direction moveDir, Player* playerPtr, Room* roomPtr);
 void movement_request(Direction moveDir, Player* playerPtr, Room* roomPtr) {
     if(moveDir != playerPtr->lookDir)               /*reduces speed if movement penalty*/
         playerPtr->speed -= LOOKING_PENALTY;
@@ -51,5 +51,39 @@ void movement_request(Direction moveDir, Player* playerPtr, Room* roomPtr) {
     playerPtr->move_timer -= 1;
     
 };
+/*check every tick for shift input in game loop*/
+/*needs to be called before movement_request because it subtracts look penalty from player.speed*/
+void sprint_request(Player *playerPtr);
+void sprint_request(Player *playerPtr) {
+    if(can_run(playerPtr->staminaBar))
+        playerPtr->speed = SPRINT_SPEED;
+    else
+        playerPtr->speed = WALK_SPEED;
+};
+
+/*called in game loop if q depressed*/
+void flashlight_toggle_request(Player *playerPtr);
+void flashlight_toggle_request(Player *playerPtr){
+    playerPtr->flashlight = !playerPtr->flashlight;
+};
+
+/*set catPtr = NULL in main game loop if no cat on tile*/
+void interact_request(Player *playerPtr, Cat *catPtr, Room *roomPtr){
+    if(catPtr != NULL) {
+        catPtr->found = true;
+        catPtr->moving = false;
+    };
+    return;
+
+    switch(roomPtr->room[playerPtr->mapCoords.y][playerPtr->mapCoords.x].type){
+        case DISPOSALBIN:
+            /*TODO implement disposal bin*/
+            break;
+        case TERMINAL:
+            /*TODO implement terminal puzzle*/
+            break;
+        };
+};
+
 
 #endif
