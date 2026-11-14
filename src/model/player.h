@@ -17,6 +17,7 @@ typedef struct {
     bool sprinting;
     int speed;
     int move_timer;
+    bool moving;
     Direction lastMoveDir;
 }Player;
 

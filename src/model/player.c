@@ -29,6 +29,7 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
         case ELEVATOR:
             playerPtr->mapCoords.x = destCoords.x;
             playerPtr->mapCoords.y = destCoords.y;
+            playerPtr->move_timer = playerPtr->speed;
             break;
     };
 };

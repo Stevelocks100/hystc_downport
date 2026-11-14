@@ -9,12 +9,17 @@
 #include "../model/vec2.h"
 
 /*must be called after sprint_request*/
+/*called every tick by game loop*/
+/*player.moving must be set each tick depending on input*/
 void movement_request();
 void movement_request(Direction moveDir, Player* playerPtr, Room* roomPtr) {
-    if(moveDir != playerPtr->lookDir)           /*reduces speed if movement penalty*/
+    if(moveDir != playerPtr->lookDir)               /*reduces speed if movement penalty*/
         playerPtr->speed -= LOOKING_PENALTY;
 
-    Vec2 moveVector;
+    if(!playerPtr->moving)                          /*resets move_timer if not moving*/
+        playerPtr->move_timer = playerPtr->speed;
+
+    Vec2 moveVector;                                /*setting movement vector*/
     switch (moveDir) {
         case NORTH:
             moveVector.x = 0;
