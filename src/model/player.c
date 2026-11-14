@@ -2,15 +2,35 @@
 #include <stdbool.h>
 #include "player.h"
 
-void flashToggle(Player player){
-    player.flashlight = !player.flashlight;
-}
+/*receives moveVector, playerPtr, and roomPtr from asynch.movement_request()*/
+void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
+    Vec2 destCoords = playerPtr->mapCoords;
+    destCoords.x += moveVec.x;
+    destCoords.y += moveVec.y;
 
-void look(Player player, Direction direction){
-    player.direction = direction;
-};
-bool isSafe(Player player, int positionX, int positionY) {
-    return false;
+    if( destCoords.x < 0 ||                                     /*out of bounds error handling*/
+        destCoords.x >=(SCREEN_WIDTH/TILE_SIZE) || 
+        destCoords.y < 0 || 
+        destCoords.y >= (SCREEN_HEIGHT/TILE_SIZE))
+        return;
+
+    switch(roomPtr->room[destCoords.y][destCoords.x].type) {    /*checks for destination tile type*/
+        case WALL:                                              /*no movement for wall*/
+            break;                                              /*funny idea, what if running into a wall
+                                                                  stunned you*/
+        case NOISETRAP:
+            /*TODO implement noisetrap call*/
+        case SAFE:
+            playerPtr->safe = true;
+        case NORMAL:
+        case PROP:
+        case DISPOSALBIN:
+        case TERMINAL:
+        case ELEVATOR:
+            playerPtr->mapCoords.x = destCoords.x;
+            playerPtr->mapCoords.y = destCoords.y;
+            break;
+    };
 };
 
 void turn(Player player, bool right) {
@@ -54,35 +74,10 @@ void turn(Player player, bool right) {
                 player.direction = SOUTH;
             }
             break;
-    }
+    };
 
-}
+};
 
-void update_position(Player player, int positionX, int positionY) {
-    /* move position, but check if there's a wall. */
-    /* if player goes past boundary */
-}
-
-void move(Player player, int speed, )
-{   
-    int i;
-    /* only move player by one, to prevent issues with clipping through walls*/
-    for (i = 0; i < speed; i++) {
-
-        switch (player.direction)
-        {
-        case NORTH:
-            update_position(player, 0, 1);
-            break;
-        case EAST:
-            update_position(player, 1, 0);
-            break;
-        case SOUTH:
-            update_position(player, 0, -1);
-            break;
-        case WEST:
-            update_position(player, -1, 0);
-            break;
-        }
-    }
-}
+void flashToggle(Player* player){
+    (*player).flashlight = !(*player).flashlight;
+};

@@ -2,25 +2,27 @@
 #define PLAYER_H
 
 #include "../include/globals.h"
+#include "../include/types.h"
+#include "staminabar.h"
+#include "room.h"
+#include "vec2.h"
 
 typedef enum {NORTH, EAST, SOUTH, WEST}Direction; 
 typedef struct {
-    int position[2]; //position[0] is x coord, position[1] is y coord
+    Vec2 mapCoords;
+    StaminaBar* staminaPtr;
     bool flashlight;
-    Direction direction;
+    Direction lookDir;
     bool safe;
+    bool sprinting;
     int speed;
+    int move_timer;
+    Direction lastMoveDir;
 }Player;
 
-void flashToggle(Player player);
-
-void look(Player player, Direction direction); 
-
-bool isSafe(Player player, int positionX, int positionY);//checks if the current tile is "safe"
+Vec2 movePlayer(Vec2 vec, Player* playerPtr, Room* roomPtr);
 
 void turn(Player player, bool right);
 
-void update_position(Player player, int positionX, int positionY);
-
-void move(Player player, int speed);
+void flashToggle(Player* player);
 #endif

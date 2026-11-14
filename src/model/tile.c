@@ -1,16 +1,61 @@
 #include "tile.h"
 #include <stdlib.h>
 
-Tile movePlayer(Tile* startPtr, Tile* endPtr, Player* playerPtr) {
-    if((*endPtr).type == WALL) { /*does nothing if destination is a wall*/
-        return *startPtr;   
-    }else {
-        (*startPtr).player = NULL;
-        (*endPtr).player = playerPtr;
-        if((*endPtr).type == NOISETRAP){
-            /*TODO NOISETRAP CALL*/
-        };
-        return *endPtr;
+Tile* movePlayer(Tile* startPtr, char wasd, Player* playerPtr) {
+    switch (wasd) {
+        case 'w':
+        case 'W':
+            switch ((*playerPtr).direction) {
+                case NORTH:
+                    startPtr
+                    break;
+                case EAST:
+                    break;
+                case WEST:
+                    break;
+                case SOUTH:
+                    break;
+            };
+            break;
+        case 'a':
+        case 'A':
+            switch ((*playerPtr).direction) {
+                case NORTH:
+                    break;
+                case EAST:
+                    break;
+                case WEST:
+                    break;
+                case SOUTH:
+                    break;
+            };
+            break;
+        case 'd':
+        case 'D':
+            switch ((*playerPtr).direction) {
+                case NORTH:
+                    break;
+                case EAST:
+                    break;
+                case WEST:
+                    break;
+                case SOUTH:
+                    break;
+            };
+            break;
+        case 's':
+        case 'S':
+            switch ((*playerPtr).direction) {
+                case NORTH:
+                    break;
+                case EAST:
+                    break;
+                case WEST:
+                    break;
+                case SOUTH:
+                    break;
+            };
+            break;
     };
 };
 
