@@ -61,6 +61,7 @@ void sprint_request(Player *playerPtr) {
         playerPtr->speed = WALK_SPEED;
 };
 
+
 /*called in game loop if q depressed*/
 void flashlight_toggle_request(Player *playerPtr);
 void flashlight_toggle_request(Player *playerPtr){

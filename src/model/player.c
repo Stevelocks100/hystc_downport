@@ -34,6 +34,7 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
     };
 };
 
+
 void turn(Player* playerPtr, bool right) {
     /* right == false means left */
 
