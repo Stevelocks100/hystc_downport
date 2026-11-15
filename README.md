@@ -4,6 +4,13 @@
 - Object Type Models ✅
 - Main Game Model ❌
   - Object Behaviour Functions ❌
+    - Player ✅
+    - Cat ❌
+    - CopyCat ❌
+    - Terminal ✅
+    - DisposalBin ❌
+    - Noise Traps ❌
+    - Stamina Bar ✅
   - Event Handler functions ❌
     - Asynchronous ✅
     - Synchronous ❌
