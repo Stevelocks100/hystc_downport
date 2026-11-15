@@ -80,8 +80,11 @@ void interact_request(Player *playerPtr, Cat *catPtr, Room *roomPtr){
         case DISPOSALBIN:
             /*TODO implement disposal bin*/
             break;
-        case TERMINAL:
-            /*TODO implement terminal puzzle*/
+        case TERMINAL1:
+            updateProgress(roomPtr->terminals[0]);
+            break;
+        case TERMINAL2:
+            updateProgress(roomPtr->terminals[1]);
             break;
         };
 };
