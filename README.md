@@ -5,9 +5,12 @@
 - Main Game Model ❌
   - Object Behaviour Functions ❌
   - Event Handler functions ❌
+    - Asynchronous ✅
+    - Synchronous ❌
+    - Conditional ❌
   - Test Driver ❌
-- Raster Graphics library ❌
-  - test driver ❌
+- Raster Graphics library ✅
+  - test driver ✅
 - Renderer module ❌
   - test driver ❌
   - Sprites
