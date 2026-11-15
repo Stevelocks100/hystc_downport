@@ -16,6 +16,7 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
 
     switch(roomPtr->room[destCoords.y][destCoords.x].type) {    /*checks for destination tile type*/
         case WALL:                                              /*no movement for wall*/
+        case CLOSEDDOOR:
             break;                                              /*funny idea, what if running into a wall
                                                                   stunned you*/
         case NOISETRAP:
@@ -23,6 +24,7 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
         case SAFE:
             playerPtr->safe = true;
         case NORMAL:
+        case OPENDOOR:
         case PROP:
         case DISPOSALBIN:
         case TERMINAL:

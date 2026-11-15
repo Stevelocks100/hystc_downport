@@ -11,9 +11,8 @@ Rooms are 2D arrays of these tiles*/
 #include "noisetrap.h"
 
 /* Tile */
-typedef enum {NORMAL, SAFE, WALL, NOISETRAP, PROP, DISPOSALBIN, TERMINAL, EXIT, ELEVATOR}TileType;
+typedef enum {NORMAL, SAFE, WALL, OPENDOOR, CLOSEDDOOR, NOISETRAP, PROP, DISPOSALBIN, TERMINAL, EXIT, ELEVATOR}TileType;
 typedef struct {
     TileType type;/*set upon loading room*/
-    bool interactive;
 }Tile;
 #endif
