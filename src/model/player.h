@@ -20,7 +20,7 @@ typedef struct {
     Direction lastMoveDir;
 }Player;
 
-Vec2 movePlayer(Vec2 vec, Player* playerPtr, Room* roomPtr);
+void movePlayer(Vec2 vec, Player* playerPtr, Room* roomPtr);
 
 void turn(Player player, bool right);
 

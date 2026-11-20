@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdint.h>
-#include "trait.h"
 #include "staminabar.h"
 #include "gameover.h"
 #ifndef MODEL_H

@@ -8,7 +8,6 @@ Rooms are 2D arrays of these tiles*/
 #include "player.h"
 #include "cat.h"
 #include "copycat.h"
-#include "noisetrap.h"
 
 /* Tile */
 typedef enum {NORMAL, SAFE, WALL, OPENDOOR, CLOSEDDOOR, NOISETRAP, PROP, DISPOSALBIN, TERMINAL1, TERMINAL2, EXIT, ELEVATOR}TileType;

@@ -27,7 +27,8 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
         case OPENDOOR:
         case PROP:
         case DISPOSALBIN:
-        case TERMINAL:
+        case TERMINAL1:
+        case TERMINAL2:
         case ELEVATOR:
             playerPtr->mapCoords.x = destCoords.x;
             playerPtr->mapCoords.y = destCoords.y;
