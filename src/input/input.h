@@ -1,7 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 #include <stdbool.h>
-#include <mint/osbind.h>
+#include <osbind.h>
 
 bool has_input();
 

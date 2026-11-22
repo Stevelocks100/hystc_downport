@@ -20,6 +20,8 @@
 
 #define TERM_SPEED 15
 #define TERM_INTERACT 70
+
+#define CATS 5
 int abs(int x);
 int abs(int x) {
     if (x < 0) {

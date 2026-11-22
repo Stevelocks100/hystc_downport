@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <stdbool.h>
 #include "player.h"
 
 /*receives moveVector, playerPtr, and roomPtr from asynch.movement_request()*/
@@ -30,10 +28,16 @@ void movePlayer(Vec2 moveVec, Player* playerPtr, Room* roomPtr){
         case TERMINAL1:
         case TERMINAL2:
         case ELEVATOR:
+            Vec2 prevPosition;
+            prevPosition.x = playerPtr->mapCoords.x;
+            prevPosition.y = playerPtr->mapCoords.y;
             playerPtr->mapCoords.x = destCoords.x;
             playerPtr->mapCoords.y = destCoords.y;
             playerPtr->move_timer = playerPtr->speed;
+            follow(prevPosition, playerPtr->playerCats);
             break;
     };
+
+    
 };
 

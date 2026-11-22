@@ -2,14 +2,16 @@
 #define PLAYER_H
 
 #include "../include/globals.h"
-#include "../include/types.h"
+#include <stdio.h>
 #include "staminabar.h"
 #include "room.h"
 #include "vec2.h"
+#include "model.h"
 
 typedef enum {NORTH, EAST, SOUTH, WEST}Direction; 
 typedef struct {
     Vec2 mapCoords;
+    Cat (*playerCats)[CATS];    /*this should point to the model's cat array*/
     StaminaBar staminaBar;
     bool flashlight;
     Direction lookDir;

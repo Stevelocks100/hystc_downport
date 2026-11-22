@@ -1,8 +1,10 @@
 #ifndef CAT_H
 #define CAT_H
 
+#include "../include/globals.h"
 #include "vec2.h"
 #include <stdbool.h>
+#include <stdlib.h>
 
 typedef enum {/*TODO think of other traits*/
     FAT,
@@ -15,6 +17,11 @@ typedef struct {
     bool shaking;
     bool found;
     bool moving;
+    int moveTimer;
 }Cat;
+
+void wander(Cat *catPtr);
+
+Vec2 follow(Vec2 nextPos, Cat *catPtr[CATS]);
 
 #endif

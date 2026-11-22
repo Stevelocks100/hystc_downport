@@ -1,43 +1,19 @@
-#include <stdbool.h>
-#include <stdint.h>
-#include "staminabar.h"
-#include "gameover.h"
 #ifndef MODEL_H
 #define MODEL_H
-
-
-
-/* see if these can be moved to their respective .h files and whatnot */
-
-typedef struct {
-    bool open;
-}DisposalBin;
-
-typedef struct {
-    //properties uncertain
-}Terminal;
-
-typedef struct {
-    bool open;
-}Door;
-
-typedef struct {
-    int col1;
-    int col2;
-    int col3;
-}TerminalPuzzle;
-
-
+#include "staminabar.h"
+#include "gameover.h"
+#include "player.h"
+#include "cat.h"
+#include "copycat.h"
+#include "disposalbin.h"
 
 typedef struct {
     Player player;
-    Cat cats[5];
+    Cat cats[CATS];
     CopyCat copycat;
     DisposalBin disposal;
-    Door bunkerDoor;
-    Terminal terminal;
+    Terminal terminals[5];
     GameOver endScr;
-    NoiseTrap traps[10]; //PROBABLY CHANGE THIS VALUE AT SOME POINT
     StaminaBar stamBar;
 }Model;
 
