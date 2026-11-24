@@ -5,6 +5,8 @@
 
 #include "stdio.h"
 #include "osbind.h"
+#include <stdbool.h>
+
 #include "../include/types.h"
 #include "../include/globals.h"
 
@@ -690,18 +692,22 @@ void plot_string(UINT8 *base, UINT8 *font, int row, int col, char *ch)
         Position(row,col): the coordinates of the effect center
         Square Size: the size of the square that directly surrounds the player.
         Direction: a direction enum defined within globals.
+        Do Triangle: a boolean for whether the triangle will render, or just the square
 
  OUTPUT: None
 */
-void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir);
+void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir, bool do_triangle);
 
-void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir) {
+void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir, bool do_triangle) {
     int triangle_width = 0;
     int i;
     int half_size = square_size >> 1;
     plot_rectangle(base, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     clear_region(base, row - half_size, col - half_size, square_size, square_size);
 
+    if (!do_triangle) {
+        return;
+    }
     switch (look_dir)
     {
     case NORTH:
