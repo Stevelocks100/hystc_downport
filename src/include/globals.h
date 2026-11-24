@@ -21,6 +21,14 @@
 #define TERM_SPEED 15
 #define TERM_INTERACT 70
 
+typedef enum
+{
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
+} Direction;
+
 #define CATS 5
 int abs(int x);
 int abs(int x) {

@@ -8,7 +8,7 @@
 #include "vec2.h"
 #include "model.h"
 
-typedef enum {NORTH, EAST, SOUTH, WEST}Direction; 
+
 typedef struct {
     Vec2 mapCoords;
     Cat (*playerCats)[CATS];    /*this should point to the model's cat array*/

@@ -164,18 +164,77 @@ void plot_horizontal_line(UINT8 *base, int row, int col, UINT16 length)
 
 }
 
+/*----- Function: clear_horizontal_line -----
 
-/*----- Function: plot_vertical_line -----
-
- PURPOSE: Plot a vertical line on the screen. The vertical line is specified by the topmost pixel of the line and the length of the line.
+ PURPOSE: The opposite of plot_horizontal_line. The horizontal line is specified by the leftmost pixel of the line and the length of the line.
 
  INPUT: Address(UINT32*): to the start of the screen
-        Position(row,col): the coordinates of the topmost pixel of the vertical line
+        Position(row,col): the coordinates of the leftmost pixel of the horizontal line
         Length: the lenth in pixels of the line
 
  OUTPUT: None
 */
-void plot_vertical_line(UINT8 *base, int row, int col, UINT16 length);
+void clear_horizontal_line(UINT8 *base, int row, int col, UINT16 length);
+
+void clear_horizontal_line(UINT8 *base, int row, int col, UINT16 length)
+{
+    int byte1;
+    int byte2; /* first/last byte */
+    int bit1;
+    int bit2; /* first/last bit */
+    int j;    /* loop vars */
+    UINT8 mask;
+
+    byte1 = col >> 3;
+    byte2 = (col + length - 1) >> 3;
+    bit1 = col & 7;
+    bit2 = (col + length - 1) & 7;
+
+    if (length == 0)
+    {
+        return; /* if the size happens to be 0, don't make it do anything */
+    }
+
+    /* it's basically the same as clear region, except that it will be doing it for one row. */
+
+    for (j = byte1; j <= byte2; j++)
+    {
+        if (byte1 == byte2)
+        {
+            mask = (UINT8)((0xFF >> bit1) & (0xFF << (7 - bit2)));
+            *(base + row * SCREEN_WIDTH_BYTES + j) &= ~(UINT8)mask;
+        }
+        else if (j == byte1)
+        {
+            mask = (UINT8)(0xFF >> bit1);
+            *(base + row * SCREEN_WIDTH_BYTES + j) &= ~(UINT8)mask;
+        }
+        else if (j == byte2)
+        {
+            mask = (UINT8)(0xFF << (7 - bit2));
+            *(base + row * SCREEN_WIDTH_BYTES + j) &= ~(UINT8)mask;
+        }
+        else
+        {
+            *(base + row * SCREEN_WIDTH_BYTES + j) = 0; /* -1 is the equivalent of 0xFF for however large the data size is. */
+        }
+
+        /* essentially if it's an edge byte, do NOT wipe the whole thing. */
+        /* accomplish this by cutting bits off a UINT8 */
+    }
+}
+
+    /*----- Function: plot_vertical_line -----
+
+     PURPOSE: Plot a vertical line on the screen. The vertical line is specified by the topmost pixel of the line and the length of the line.
+
+     INPUT: Address(UINT32*): to the start of the screen
+            Position(row,col): the coordinates of the topmost pixel of the vertical line
+            Length: the lenth in pixels of the line
+
+     OUTPUT: None
+    */
+    void plot_vertical_line(UINT8 *base, int row, int col, UINT16 length);
 
 void plot_vertical_line(UINT8 *base, int row, int col, UINT16 length)
 {
@@ -620,6 +679,118 @@ void plot_string(UINT8 *base, UINT8 *font, int row, int col, char *ch)
         plot_character(base, font, row, col, ch[i]);
         col += 8;
         i++;
+    }
+}
+
+/*----- Function: draw_flashlight -----
+
+ PURPOSE: Covers the entire screen, then erases a small square around the center location, and a triangle.
+
+ INPUT: Address(UINT8*): to the start of the screen
+        Position(row,col): the coordinates of the effect center
+        Square Size: the size of the square that directly surrounds the player.
+        Direction: a direction enum defined within globals.
+
+ OUTPUT: None
+*/
+void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir);
+
+void draw_flashlight(UINT8 *base, int row, int col, int square_size, Direction look_dir) {
+    int triangle_width = 0;
+    int i;
+    int half_size = square_size >> 1;
+    plot_rectangle(base, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    clear_region(base, row - half_size, col - half_size, square_size, square_size);
+
+    switch (look_dir)
+    {
+    case NORTH:
+
+
+        for (i = row; i >= 0; i--)
+        {
+            left = col - triangle_width;
+            right = col + triangle_width;
+
+            /* Clip to screen boundaries */
+            if (left < 0)
+                left = 0;
+
+            if (right >= SCREEN_WIDTH)
+                right = SCREEN_WIDTH - 1;
+
+            if (left <= right)
+            {
+                clear_horizontal_line(
+                    base, i, left, right - left + 1);
+            }
+
+            triangle_width++;
+        }
+        break;
+
+    case EAST:
+        for (i = 0; i < SCREEN_HEIGHT; i++)
+        {
+            triangle_width = abs(i - row);
+
+            left = col + triangle_width;
+
+            if (left < 0)
+                left = 0;
+
+            if (left < SCREEN_WIDTH)
+            {
+                clear_horizontal_line(
+                    base, i, left, SCREEN_WIDTH - left);
+            }
+        }
+        break;
+
+    case SOUTH:
+
+        for (i = row; i < SCREEN_HEIGHT; i++)
+        {
+            left = col - triangle_width;
+            right = col + triangle_width;
+
+            /* Clip to screen boundaries */
+            if (left < 0)
+                left = 0;
+
+            if (right >= SCREEN_WIDTH)
+                right = SCREEN_WIDTH - 1;
+
+            if (left <= right)
+            {
+                clear_horizontal_line(
+                    base, i, left, right - left + 1);
+            }
+
+            triangle_width++;
+        }
+        break;
+
+    case WEST:
+        for (i = 0; i < SCREEN_HEIGHT; i++)
+        {
+            triangle_width = abs(i - row);
+
+            right = col - triangle_width;
+
+            if (right >= SCREEN_WIDTH)
+                right = SCREEN_WIDTH - 1;
+
+            if (right >= 0)
+            {
+                clear_horizontal_line(
+                    base, i, 0, right + 1);
+            }
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
